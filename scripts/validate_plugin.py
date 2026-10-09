@@ -62,8 +62,10 @@ for file in skills:
 # Root AGENTS.md contains only the agreed 12 project-specific rules.
 agents = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
 project_rules = [line for line in agents.splitlines() if line.startswith("- ")]
-if agents.splitlines()[0] != "# Dream — Project Rules" or len(project_rules) != 12:
-    fail("AGENTS.md must contain the agreed heading and exactly 12 project rules")
+if agents.splitlines()[0] != "# Dream — Project Rules" or len(project_rules) != 13:
+    fail("AGENTS.md must contain the agreed heading and 13 project rules, including Skill Check")
+if not project_rules or project_rules[0] != "- Before starting each new task, consult `skills/github-development/SKILL.md` and follow its applicable workflow. Do not rely on remembered instructions from previous tasks.":
+    fail("AGENTS.md: mandatory Skill Check must be first")
 if any(line.startswith("## ") for line in agents.splitlines()):
     fail("AGENTS.md must be a simple list without workflow sections")
 for token in ("plugin.json", ".codex-plugin/plugin.json", "Ponytail", "Grill Me",
@@ -72,6 +74,15 @@ for token in ("plugin.json", ".codex-plugin/plugin.json", "Ponytail", "Grill Me"
         fail(f"AGENTS.md: missing project rule {token!r}")
 if any(token in agents for token in ("Gate A", "Gate B", "Gate C", "Split View", "Plugin Creator")):
     fail("AGENTS.md must not duplicate skill workflow instructions")
+# Skill Check applies before each task while reusing verified same-task context.
+required_skill_check = ("## Mandatory Skill Check", "Before starting each new GitHub development task",
+                        "re-check when the repository or skill changes",
+                        "Do not rely solely on remembered instructions from previous tasks",
+                        "This check never replaces Gate A, Gate B, merge approval or publication approval")
+skill_text = (ROOT / "skills/github-development/SKILL.md").read_text(encoding="utf-8")
+for rule in required_skill_check:
+    if rule not in skill_text:
+        fail(f"SKILL.md: missing required Skill Check safeguard {rule!r}")
 # Authorization rules belong to the development skill and existing gates reference.
 skill_policy = (ROOT / "skills/github-development/SKILL.md").read_text(encoding="utf-8")
 gate_policy = (ROOT / "skills/github-development/references/gates.md").read_text(encoding="utf-8")
