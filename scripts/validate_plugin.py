@@ -67,6 +67,20 @@ for policy_file in (ROOT / "AGENTS.md", ROOT / "skills/github-development/SKILL.
             fail(f"{policy_file.relative_to(ROOT)}: missing authorization rule {rule!r}")
     if policy.index("Gate A") > policy.index("Gate B"):
         fail(f"{policy_file.relative_to(ROOT)}: Issue gate must precede plan gate")
+# Regression coverage for mandatory read-only repository onboarding.
+overview = (ROOT / "skills/github-development/SKILL.md").read_text(encoding="utf-8")
+template = (ROOT / "skills/github-development/references/templates.md").read_text(encoding="utf-8")
+gates = (ROOT / "skills/github-development/references/gates.md").read_text(encoding="utf-8")
+for label, value in (("Skill", overview), ("Template", template)):
+    for stage in ("Repo", "Rules", "Docs", "Tasks"):
+        if stage not in value:
+            fail(f"{label}: missing Overview stage {stage}")
+    for requirement in ("AGENTS.md", "README", "Issues", "Pull Requests"):
+        if requirement not in value:
+            fail(f"{label}: missing auto-inspection requirement {requirement}")
+for requirement in ("read-only", "AGENTS.md", "README", "Issues/PRs"):
+    if requirement not in gates:
+        fail(f"gates: missing initialization safeguard {requirement}")
 for required in ("AGENTS.md", "README.md"):
     if not (ROOT / required).is_file():
         fail(f"missing {required}")
