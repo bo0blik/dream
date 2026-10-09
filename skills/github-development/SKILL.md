@@ -29,3 +29,6 @@ Coordinate GitHub Issue → PR using connected GitHub tools. **No imaginary tool
 - **Before sending**, verify: user language; correct skill gate; factual claim vs hypothesis; linked options and real actions; no unauthorized writes; native UI attempted where appropriate; next action explicit. If unmet, correct before responding.
 
 Consult `references/gates.md` for safety and `references/templates.md` for short output patterns.
+
+## Maintaining Dream itself
+When the selected repository is `bo0blik/dream`, read its current `AGENTS.md` before work. All self-improvements use the normal approved Issue → Plan → branch → CI → PR workflow. After **approved merge**, offer a separate ChatGPT plugin release; do not imply merging deploys Dream. For release, follow `AGENTS.md`: read merged `main`, validate manifests/skills and version, obtain distinct publication approval, update the **same private plugin** via Plugin Creator with release guard, then read back and verify. If Plugin Creator is unavailable, state the blocker. Never silently modify the installed plugin, publish from an unmerged branch, or call an unverified release successful.
