@@ -35,18 +35,19 @@ Display a contextual native card only when useful, with a project name, preview 
 
 ## Canonical native Preview card (adapt to real evidence)
 
-First obtain a trusted, verified HTTPS deployment URL from a read-only fetch. **Do not set `verifiedUrl` from a guessed GitHub Pages address or from unverified README text.** The following is an illustrative template for a *confirmed* deployed site, not proof that the example URL exists. Replace the URL, project title and evidence before use; if verification fails, choose Error or Unavailable and omit the Open Preview action.
+First obtain a trusted, verified HTTPS deployment URL from a read-only fetch. **Do not set `verifiedUrl` from a guessed GitHub Pages address or from unverified README text.** The template defaults to no verified URL and an Unavailable state. Only populate evidence fields from a separate completed read-only verification step. Change the status to Available only when HTTPS reachability **and** project relevance were verified.
 
 ```jsx
-{@body const verifiedUrl = "https://example.org/verified-preview"}
-{@body const previewStatus = "Available"}
+{@body const verifiedUrl = null}
+{@body const urlVerified = false}
+{@body const previewStatus = "Unavailable"}
 <box border radius="xl" padding={3} gap={2}>
   <row align="center" justify="between">
     <text strong>Project Preview · Project name</text>
     <badge>{previewStatus}</badge>
   </row>
-  <text size="xs">Verified deployment · Source: deployment record</text>
-  {#if previewStatus === "Available" && verifiedUrl.startsWith("https://")}
+  <text size="xs">Show actual deployment evidence if verified; otherwise explain unavailable status</text>
+  {#if previewStatus === "Available" && urlVerified === true && typeof verifiedUrl === "string" && verifiedUrl.startsWith("https://")}
     <button block onClick={()=>GenUI.openUrl(verifiedUrl)}>
       <icon name="external-link" inline/> Open Preview
     </button>
@@ -60,7 +61,7 @@ First obtain a trusted, verified HTTPS deployment URL from a read-only fetch. **
 </box>
 ```
 
-**Safety contract for the example:** `verifiedUrl` is a placeholder populated only **after** independent read-only URL verification. Remove the example URL entirely from actual fallback output. The button must not be rendered for Screenshot, Build required, Unavailable, Error, missing URL, non-HTTPS URL or a failed verification. The Prepare Preview callback only requests a follow-up explanation/approval: it never builds, publishes, installs dependencies or edits GitHub. URL verification must also confirm project relevance, not only an HTTP success status. A returned Open Preview action does not imply the host entered Split View. Host layouts without native buttons must use a real verified Markdown link for Available, a plain-language authorization request for Build required, and factual status messages otherwise.
+**Safety contract for the example:** `verifiedUrl` is null and `urlVerified` is false by default. Assign a real HTTPS URL and set `urlVerified` to true only from evidence gathered in a separate successful read-only check; never infer verification from the URL prefix alone. The button must not be rendered for Screenshot, Build required, Unavailable, Error, missing URL, non-HTTPS URL or a failed verification. The Prepare Preview callback only requests a follow-up explanation/approval: it never builds, publishes, installs dependencies or edits GitHub. URL verification must also confirm project relevance, not only an HTTP success status. A returned Open Preview action does not imply the host entered Split View. Host layouts without native buttons must use a real verified Markdown link for Available, a plain-language authorization request for Build required, and factual status messages otherwise.
 
 ## Scenario contract (machine-readable)
 
