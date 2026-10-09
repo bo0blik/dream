@@ -98,6 +98,23 @@ for rule in ("future task scope is unknown", "directory ancestry", "before"):
         fail(f"Overview missing scoped nested AGENTS safeguard: {rule}")
 if "read-only initialization" not in overview or "No GitHub writes during initialization" not in overview:
     fail("Overview does not enforce read-only initialization")
+# Preview instructions remain three-layered, contextual and approval-gated.
+preview = (ROOT / "skills/github-development/references/preview.md").read_text(encoding="utf-8")
+agents = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
+for label, data, required in (
+    ("AGENTS.md", agents, ("Project Preview policy", "Gate A/B", "Split View", "private")),
+    ("SKILL.md", overview, ("Context-aware Project Preview", "references/preview.md", "Build required", "Open Preview", "Gate A/B")),
+    ("preview.md", preview, ("GitHub Pages", "Available", "Screenshot", "Build required", "Unavailable", "Error", "Split View", "read-only", "untrusted", "Markdown", "Vite", "React")),
+):
+    for token in required:
+        if token not in data:
+            fail(f"{label}: missing required preview rule {token!r}")
+if "a fifth mandatory Repo → Rules → Docs → Tasks stage" not in agents:
+    fail("Preview must remain contextual, not a fifth onboarding stage")
+if "Do not execute untrusted code" not in agents:
+    fail("Preview must prohibit unauthorized execution")
+if "never" not in preview.lower() or "verify" not in preview.lower():
+    fail("Preview must document verification and negative paths")
 for required in ("AGENTS.md", "README.md"):
     if not (ROOT / required).is_file():
         fail(f"missing {required}")
