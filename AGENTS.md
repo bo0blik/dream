@@ -1,5 +1,6 @@
 # Dream — Project Rules
 
+- Before starting each new task, consult `skills/github-development/SKILL.md` and follow its applicable workflow. Do not rely on remembered instructions from previous tasks.
 - Dream is a lightweight GitHub development plugin for ChatGPT. Keep its implementation simple and maintainable.
 - Use English for code, comments, documentation, commits, Issues, and Pull Requests.
 - Follow the existing project structure and naming conventions.
