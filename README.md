@@ -6,7 +6,7 @@ A concise, approval-gated GitHub development orchestrator for ChatGPT.
 
 ## Installation
 
-[Open the private Dream plugin in ChatGPT](https://chatgpt.com/plugins/plugins_6ac86ad410fc8191825b71f0652711a1)
+[Open the private Dream plugin in ChatGPT](https://chatgpt.com/plugins/plugins_6ac86e8247e881919d149fd5492e77aa)
 
 > Plugin source is maintained here. Pushing to this repository does **not** automatically update the installed ChatGPT plugin. Publish a new release through Plugin Creator after reviewing a PR.
 
