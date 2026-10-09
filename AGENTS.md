@@ -20,3 +20,10 @@ The authoritative source is the **merged `main`** branch of `bo0blik/dream`; pus
 ## Safety
 
 Keep changes in PRs until explicit merge approval. Changes to project policy, dependencies, secrets, destructive operations and releases need their own scope-specific consent. Do not expose credentials or personal information.
+
+## Mandatory language policy
+
+- Write code, comments, tests, configuration, documentation, GitHub Issues, PRs, reviews, branches, commit messages and release notes in **English**.
+- Translate user requirements into English before writing GitHub artifacts; preserve external API contracts and existing identifiers.
+- Respond in the user's language when clear, otherwise English. Localize ChatGPT UI labels, not code identifiers.
+- Apply this rule to new or edited content; do not rewrite unrelated legacy code solely for translation.
