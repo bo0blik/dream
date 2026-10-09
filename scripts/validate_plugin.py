@@ -81,6 +81,23 @@ for label, value in (("Skill", overview), ("Template", template)):
 for requirement in ("read-only", "AGENTS.md", "README", "Issues/PRs"):
     if requirement not in gates:
         fail(f"gates: missing initialization safeguard {requirement}")
+# Validate the interaction example and ordering, not just the names of the stages.
+required_ui = ("DIL.useState(3)", "onClick={()=>setStage(index)}",
+               "onClick={()=>setStage(Math.max(0,stage-1))}",
+               "onClick={()=>setStage(Math.min(3,stage+1))}",
+               "{#if stage===0}", "{:else if stage===1}", "{:else if stage===2}",
+               "<pressable", "<grid", "No GitHub")
+for token in required_ui[:-1]:
+    if token not in template:
+        fail(f"Overview template missing functional control: {token}")
+if not (overview.index("1. **Repo:**") < overview.index("2. **Rules:**") <
+        overview.index("3. **Docs:**") < overview.index("4. **Tasks:**")):
+    fail("Overview initialization order is incorrect")
+for rule in ("future task scope is unknown", "directory ancestry", "before"):
+    if rule not in overview:
+        fail(f"Overview missing scoped nested AGENTS safeguard: {rule}")
+if "read-only initialization" not in overview or "No GitHub writes during initialization" not in overview:
+    fail("Overview does not enforce read-only initialization")
 for required in ("AGENTS.md", "README.md"):
     if not (ROOT / required).is_file():
         fail(f"missing {required}")
