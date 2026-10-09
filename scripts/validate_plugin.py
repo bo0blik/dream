@@ -118,7 +118,7 @@ if "never" not in preview.lower() or "verify" not in preview.lower():
 # Verify the canonical native UI and deterministic policy scenarios.
 for token in (
     'GenUI.openUrl(verifiedUrl)',
-    'previewStatus === "Available" && verifiedUrl.startsWith("https://")',
+    'previewStatus === "Available" && urlVerified === true && typeof verifiedUrl === "string" && verifiedUrl.startsWith("https://")',
     'previewStatus === "Build required"',
     'GenUI.issueNewTurn(',
     'Do not execute or deploy anything.',
@@ -126,6 +126,18 @@ for token in (
 ):
     if token not in preview:
         fail(f"preview.md: missing functional or safety condition {token!r}")
+# Fail closed: the canonical UI must not ship with a fabricated active deployment.
+for token in ('{@body const verifiedUrl = null}',
+              '{@body const urlVerified = false}',
+              '{@body const previewStatus = "Unavailable"}'):
+    if token not in preview:
+        fail(f"preview.md: unsafe default in native preview template: {token}")
+if re.search(r'(?m)^\\{@body const verifiedUrl\\s*=\\s*["\\\']https?://', preview):
+    fail("preview.md: canonical preview must not hard-code a URL")
+if '{@body const previewStatus = "Available"}' in preview:
+    fail("preview.md: canonical preview must not start in Available state")
+if "never infer verification from the URL prefix alone" not in preview:
+    fail("preview.md: URL prefix must not be used as verification evidence")
 blocks = re.findall(r"```json\n(.*?)\n```", preview, re.S)
 if len(blocks) != 1:
     fail("preview.md: expected exactly one JSON scenario contract")
