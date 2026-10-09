@@ -38,3 +38,11 @@ GitHub Actions periodically checks upstream and opens an update PR; it never aut
 ## Branch cleanup
 
 After each merged PR, remove the feature branch if it is safely obsolete. Preserve the default/protected branch and unfinished work. If deletion is not supported by the connected agent, use the GitHub **Delete branch** control on the merged PR.
+
+## Release automation
+
+The `Build Dream package` GitHub Actions workflow runs validation and creates a `dream-plugin.zip` artifact associated with the exact commit SHA. Download the artifact from the workflow run after CI success, then publish it to the existing private plugin through Plugin Creator after explicit approval. The installed plugin does not update merely by merging a PR.
+
+On merged PRs, `Clean merged feature branch` automatically deletes an obsolete unchanged branch if it is neither protected nor used by another open PR. No additional confirmation is required for safe cleanup.
+
+Dream presents native, functional action buttons for review, revision, merge and release whenever supported, with a concise fallback otherwise.
