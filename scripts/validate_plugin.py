@@ -255,6 +255,47 @@ if len(scenarios) != 10 or any(mode not in overview or writes for mode, writes i
     fail("brainstorming: invalid routing scenario matrix")
 if "Design approval" not in brainstorm and "design approval" not in brainstorm:
     fail("brainstorming: design approval cannot grant write access")
+# Global Dream workflow UI contract: static policy regression checks.
+global_ui = (ROOT / "skills/github-development/SKILL.md").read_text(encoding="utf-8")
+global_section = global_ui.split("## Mandatory global workflow UI contract", 1)
+if len(global_section) != 2:
+    fail("SKILL.md: missing single mandatory global workflow UI contract")
+else:
+    contract = global_section[1].split("\n## ", 1)[0]
+    if global_ui.count("## Mandatory global workflow UI contract") != 1:
+        fail("SKILL.md: global UI contract must be unique")
+    global_stages = (
+        "Idea / Brainstorming", "Repository Overview", "Issue / Gate A",
+        "Plan / Gate B", "Development", "PR / CI / Gate C", "Release"
+    )
+    for stage in global_stages:
+        if stage not in contract:
+            fail(f"SKILL.md: global workflow stage missing: {stage}")
+    for phrase in (
+        "Repository → Rules → Docs → Tasks", "nested", "Stage identity",
+        "Verified context", "Primary content", "Truthful status",
+        "Functional next actions", "Safety boundary",
+        "explicit user repository selection", "never automatically choose",
+        "Reuse", "refresh", "Gate A", "Gate B", "Gate C",
+        "publication approval", "read-only", "text fallback",
+        "simple factual", "interim progress updates"
+    ):
+        if phrase.casefold() not in contract.casefold():
+            fail(f"SKILL.md: missing global UI safeguard: {phrase}")
+    scenario_lines = re.findall(r"^\\d+\\. .+ → .+$", contract, re.M)
+    if len(scenario_lines) != 13:
+        fail("SKILL.md: global UI scenario contract must cover 13 cases")
+    if not all(word in contract for word in (
+        "PR with pending/failed CI", "no Gate C", "installed files read-back",
+        "stale HEAD", "fallback", "Gate B still pending")):
+        fail("SKILL.md: missing critical scenario boundaries")
+readme_ui = (ROOT / "README.md").read_text(encoding="utf-8")
+for phrase in ("Global workflow UI", "Idea / Brainstorming", "Repository Overview",
+               "Issue / Gate A", "Plan / Gate B", "Development",
+               "PR / CI / Gate C", "Release", "Repository → Rules → Docs → Tasks",
+               "functional", "separate"):
+    if phrase not in readme_ui:
+        fail(f"README.md: missing global workflow UI description: {phrase}")
 for required in ("AGENTS.md", "README.md"):
     if not (ROOT / required).is_file():
         fail(f"missing {required}")
