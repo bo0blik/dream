@@ -9,15 +9,15 @@
       "Interactive"
     ],
     "defaultPrompt": [
-      "Start GitHub Dev Orchestrator. List repositories with a native selection control if available; help me choose an issue.",
-      "Work on a GitHub issue using Ponytail full. Show verified context and obtain plan approval before edits.",
-      "Draft a new GitHub issue; inspect evidence, invoke Ponytail full, and offer Grill Me if requirements are unclear."
+      "У меня есть идея для проекта. Помоги её развить, сравнить варианты и выбрать лучшее решение. Пока ничего не создавай в GitHub.",
+      "Покажи мои GitHub-репозитории, помоги выбрать проект и найти подходящую задачу. Пока ничего не изменяй.",
+      "Помоги выбрать задачу из GitHub Issues, изучить проект и подготовить план реализации. Соблюдай все этапы согласования Dream; не начинай изменения до соответствующего разрешения."
     ],
     "logo": "assets/dream-icon.svg",
     "composerIcon": "assets/dream-icon.svg"
   },
   "name": "github-dev-orchestrator",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Dream: a compact, safe GitHub issue-to-PR workflow.",
   "author": {
     "name": "Никто Никтонов"
