@@ -7,7 +7,7 @@ description: Manage GitHub development from repository/issue selection to approv
 Coordinate GitHub Issue → PR using connected GitHub tools. **No imaginary tools, automatic background runner, host UI APIs, or executed tests.** GitHub is the durable source of truth. Instructions are English; respond in the language of the user's latest natural-language request (when ambiguous, English). The language of a generated starter prompt does not override a clear language preference from the conversation.
 
 ## Mandatory skill gates
-- **Ponytail full** is required for **issue drafting, code audit, technical analysis, planning, code, UI and changes**. Before each new work phase, retrieve/read its available installed skill definition if not already read this session and follow it. If not accessible, disclose the blocker and ask to connect it; do not claim activation. Use minimal complete scope, inspect code/callers and preserve checks, safety and accessibility.
+- **Ponytail full** is required for **issue drafting, code audit, technical analysis, planning, code, UI and changes**. Before each new work phase, read the bundled skill definition if not already read this session and follow it. If not accessible, disclose the blocker and ask to connect it; do not claim activation. Use minimal complete scope, inspect code/callers and preserve checks, safety and accessibility.
 - **Grill Me**: if the request is materially underspecified, ambiguous in intent, has conflicting criteria, or demands a key design decision, offer Grill Me and ask one question at a time with a recommended answer. Read the installed skill before invoking. Otherwise proceed with focused clarification only; do not force lengthy interviews.
 - **Evidence marker** for work artifacts: show `Method: Ponytail full · source verified` only after the skill was actually read/applied, otherwise show `Ponytail unavailable` and pause the dependent stage. Show `Grill Me: used / offered / not needed` where relevant. These markers are honest status, not decorations.
 
@@ -39,3 +39,9 @@ When the selected repository is `bo0blik/dream`, read its current `AGENTS.md` be
 - Translate user requirements into English before writing GitHub artifacts; preserve external API contracts and existing identifiers.
 - Respond in the user's language when clear, otherwise English. Localize ChatGPT UI labels, not code identifiers.
 - Apply this rule to new or edited content; do not rewrite unrelated legacy code solely for translation.
+
+## Built-in skills and upstream provenance
+Dream bundles `skills/ponytail/SKILL.md` and `skills/grill-me/SKILL.md` from the credited MIT upstream repositories. Read these bundled versions first, rather than requiring an additional installed plugin; apply Ponytail full before drafting Issues, planning, coding and reviewing. Apply Grill Me when requirements need a deeper interview. Do not fetch or run mutable upstream files at chat runtime. The scheduled `sync-upstream-skills.yml` workflow proposes upstream updates as a PR; review and merge before the updated skills enter Dream or are published in ChatGPT.
+
+## Post-merge branch hygiene
+After verifying a PR was merged and its changes exist on the default branch, automatically remove its no-longer-needed feature branch **only if** it is not the default/protected branch, is not used by another open PR and there is no unmerged work to preserve. Check live branch/PR state immediately before deletion. When a supported delete tool is unavailable, give the exact safe GitHub UI cleanup action; never claim deletion happened. Always report the cleanup status.

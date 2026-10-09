@@ -27,3 +27,13 @@ Keep changes in PRs until explicit merge approval. Changes to project policy, de
 - Translate user requirements into English before writing GitHub artifacts; preserve external API contracts and existing identifiers.
 - Respond in the user's language when clear, otherwise English. Localize ChatGPT UI labels, not code identifiers.
 - Apply this rule to new or edited content; do not rewrite unrelated legacy code solely for translation.
+
+## Bundled skills and upstream updates
+- The authoritative built-in skill files are `skills/ponytail/SKILL.md` and `skills/grill-me/SKILL.md`, imported from their MIT-licensed originals and accompanied by license notices.
+- Use bundled Ponytail full for Issue drafting, plans, code and UI. Offer bundled Grill Me when questions materially affect scope. No separate plugin installation is required.
+- Never execute or silently trust a mutable upstream skill at chat runtime. The scheduled GitHub workflow may propose upstream changes in a reviewable PR, with provenance in `skills/upstream-lock.json`.
+
+## Mandatory post-merge cleanup
+- After a confirmed merge, remove the source feature branch if it is no longer used, has no work needing preservation, and is not protected/default. Verify the live state before deletion.
+- A squash merge does not make source commits ancestors of `main`; verify the PR is merged and its diff integrated rather than relying solely on commit ancestry.
+- If safe deletion tooling is unavailable, report that cleanup is pending and provide the GitHub UI action. Never falsely mark cleanup complete.

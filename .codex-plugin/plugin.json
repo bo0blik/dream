@@ -12,10 +12,12 @@
       "Start GitHub Dev Orchestrator. List repositories with a native selection control if available; help me choose an issue.",
       "Work on a GitHub issue using Ponytail full. Show verified context and obtain plan approval before edits.",
       "Draft a new GitHub issue; inspect evidence, invoke Ponytail full, and offer Grill Me if requirements are unclear."
-    ]
+    ],
+    "logo": "assets/dream-icon.svg",
+    "composerIcon": "assets/dream-icon.svg"
   },
   "name": "github-dev-orchestrator",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "Dream: a compact, safe GitHub issue-to-PR workflow.",
   "author": {
     "name": "Никто Никтонов"
