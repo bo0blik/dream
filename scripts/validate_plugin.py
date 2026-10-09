@@ -282,7 +282,7 @@ else:
     ):
         if phrase.casefold() not in contract.casefold():
             fail(f"SKILL.md: missing global UI safeguard: {phrase}")
-    scenario_lines = re.findall(r"^\\d+\\. .+ → .+$", contract, re.M)
+    scenario_lines = re.findall(r"^\d+\. .+ → .+$", contract, re.M)
     if len(scenario_lines) != 13:
         fail("SKILL.md: global UI scenario contract must cover 13 cases")
     if not all(word in contract for word in (
