@@ -126,7 +126,7 @@ for token in (
 ):
     if token not in preview:
         fail(f"preview.md: missing functional or safety condition {token!r}")
-blocks = re.findall(r"```json\\n(.*?)\\n```", preview, re.S)
+blocks = re.findall(r"```json\n(.*?)\n```", preview, re.S)
 if len(blocks) != 1:
     fail("preview.md: expected exactly one JSON scenario contract")
 else:
