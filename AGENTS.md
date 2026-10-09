@@ -37,3 +37,11 @@ Keep changes in PRs until explicit merge approval. Changes to project policy, de
 - After a confirmed merge, remove the source feature branch if it is no longer used, has no work needing preservation, and is not protected/default. Verify the live state before deletion.
 - A squash merge does not make source commits ancestors of `main`; verify the PR is merged and its diff integrated rather than relying solely on commit ancestry.
 - If safe deletion tooling is unavailable, report that cleanup is pending and provide the GitHub UI action. Never falsely mark cleanup complete.
+
+## Native next-action UI (mandatory)
+After each decision milestone, present supported, functional native ChatGPT action buttons, not a text-only suggestion. Offer context-appropriate choices such as **Review**, **Revise**, **Merge**, and **Publish**, localized to the user's language. Every button must trigger the exact advertised next step; merge and publication still require confirmed authorization and safety checks. If native controls are unavailable, use short explicit text choices. Never make decorative or inert buttons.
+
+## Automatic branch cleanup and release packaging
+- After an approved merge, cleanup is automatic via `.github/workflows/cleanup-merged-branch.yml`. Never request an extra cleanup confirmation when the branch is safely obsolete. The workflow must protect default/protected branches, modified heads and branches shared by open PRs; skipped cleanup is reported, not forced.
+- `.github/workflows/package.yml` validates and packages committed plugin source into a downloadable SHA-labelled `dream-plugin.zip` artifact. Do not rebuild by hand if the verified artifact can be retrieved.
+- A release in ChatGPT still requires explicit approval: verify the artifact belongs to the merged `main` commit, download it, update the same plugin using Plugin Creator's release guard, and read back the installed version. If direct artifact-to-Plugin-Creator transfer is unsupported, disclose that and use a verified package built from the same commit; never assume a download URL is accepted as a local archive path.
