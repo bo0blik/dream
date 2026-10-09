@@ -36,6 +36,21 @@ cui = compat.get("interface", {})
 for key in ("displayName", "shortDescription", "longDescription", "developerName", "category", "capabilities", "defaultPrompt"):
     if ui.get(key) != cui.get(key):
         fail(f"interface.{key} differs")
+# Exact approved Russian onboarding scenarios: ideas, repository, then development.
+expected_starter_prompts = [
+    "У меня есть идея для проекта. Помоги её развить, сравнить варианты и выбрать лучшее решение. Пока ничего не создавай в GitHub.",
+    "Покажи мои GitHub-репозитории, помоги выбрать проект и найти подходящую задачу. Пока ничего не изменяй.",
+    "Помоги выбрать задачу из GitHub Issues, изучить проект и подготовить план реализации. Соблюдай все этапы согласования Dream; не начинай изменения до соответствующего разрешения.",
+]
+if version != "1.1.1":
+    fail("Dream starter prompts release must use version 1.1.1 in both manifests")
+if ui.get("defaultPrompt") != expected_starter_prompts:
+    fail("plugin.json: defaultPrompt must contain the exact three approved Russian scenarios, in order")
+if cui.get("defaultPrompt") != expected_starter_prompts:
+    fail(".codex-plugin/plugin.json: defaultPrompt must match the same three approved Russian scenarios")
+if not isinstance(ui.get("defaultPrompt"), list) or len(ui["defaultPrompt"]) != 3:
+    fail("starter prompt count must be exactly three")
+
 if ui.get("displayName") != "Dream":
     fail("displayName must be Dream")
 
