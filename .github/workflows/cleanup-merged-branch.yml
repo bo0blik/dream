@@ -9,6 +9,9 @@ jobs:
   cleanup:
     if: github.event.pull_request.merged == true && github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
+    concurrency:
+      group: clean-merged-${{ github.event.pull_request.head.ref }}
+      cancel-in-progress: false
     env:
       GH_TOKEN: ${{ github.token }}
       REPO: ${{ github.repository }}
@@ -25,7 +28,10 @@ jobs:
           PROTECTED=$(jq -r '.protected' <<< "$CURRENT")
           SHA=$(jq -r '.commit.sha' <<< "$CURRENT")
           if [[ "$PROTECTED" == "true" || "$SHA" != "$HEAD_SHA" ]]; then echo "Skip protected or changed branch"; exit 0; fi
-          OPEN=$(gh api --paginate "repos/$REPO/pulls?state=open&per_page=100" | jq --arg name "$HEAD_REF" '[.[] | select(.head.ref == $name and .head.repo.full_name == env.REPO)] | length')
+          OPEN=$(gh api --paginate --slurp "repos/$REPO/pulls?state=open&per_page=100" | jq --arg name "$HEAD_REF" --arg repo "$REPO" '[.[][] | select(.head.ref == $name and .head.repo.full_name == $repo)] | length')
           if [[ "$OPEN" != "0" ]]; then echo "Skip branch used by an open PR"; exit 0; fi
+          # Recheck immediately before deletion; the GitHub delete-ref API has no SHA precondition.
+          LATEST=$(gh api "repos/$REPO/branches/$HEAD_REF" --jq '.commit.sha') || { echo "Branch removed before cleanup"; exit 0; }
+          if [[ "$LATEST" != "$HEAD_SHA" ]]; then echo "Skip branch changed during cleanup"; exit 0; fi
           gh api -X DELETE "repos/$REPO/git/refs/heads/$HEAD_REF"
           echo "Deleted merged branch: $HEAD_REF"
