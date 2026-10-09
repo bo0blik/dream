@@ -25,9 +25,8 @@ if main.get("name") != "github-dev-orchestrator":
 if compat.get("name") != main.get("name"):
     fail("compatibility name differs")
 version = main.get("version", "")
-if not re.fullmatch(r"0|[1-9]\d*\.0|[1-9]\d*\.0", version):
-    if not re.fullmatch(r"(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)", version):
-        fail("version must be semantic x.y.z")
+if not re.fullmatch(r"(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)", version):
+    fail("version must be semantic x.y.z")
 if compat.get("version") != version:
     fail("compatibility version differs")
 if compat.get("description") != main.get("description"):
