@@ -29,6 +29,10 @@ After selecting a repository, Dream automatically reads root and applicable nest
 
 Dream can offer optional Project Preview for websites, HTML games and UI changes. It prefers verified existing GitHub Pages or other deployments and genuine project screenshots. A compact preview card has truthful Available, Screenshot, Build required, Unavailable or Error states; Open Preview links to verified pages, while Split View availability depends on the ChatGPT host. Never assume a guessed URL is live, execute unfamiliar builds, change GitHub Pages settings or publish private code without authorization. Preview does not add a fifth mandatory Repository Overview stage. The policy, workflow and detailed decisions live in AGENTS.md, the github-development skill and its references/preview.md.
 
+## Brainstorming and intent-aware routing
+
+Dream bundles an MIT-licensed adaptation of [obra/superpowers Brainstorming](https://github.com/obra/superpowers/blob/8ca22dba9a94f28898bbce59f2537ff4d87c747d/skills/brainstorming/SKILL.md), pinned to revision `8ca22dba9a94f28898bbce59f2537ff4d87c747d` (license and attribution under `skills/brainstorming/LICENSE`). It explores ideas through Spike, Bounded and Architectural discussions, while Grill Me clarifies consequential uncertainty and Ponytail guides GitHub development. Idea/design approval never authorizes repository writes: Gate A/B and merge/publication consent remain separate. Meaningful completed responses offer functional next-action buttons where supported, with text fallback. No changes to root AGENTS.md are needed.
+
 ## Development
 
 Open an Issue with acceptance criteria, approve the plan, implement on a feature branch, validate, and submit a PR. The installed plugin must be updated separately after merge.
