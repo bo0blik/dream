@@ -115,6 +115,47 @@ if "Do not execute untrusted code" not in agents:
     fail("Preview must prohibit unauthorized execution")
 if "never" not in preview.lower() or "verify" not in preview.lower():
     fail("Preview must document verification and negative paths")
+# Verify the canonical native UI and deterministic policy scenarios.
+for token in (
+    'GenUI.openUrl(verifiedUrl)',
+    'previewStatus === "Available" && verifiedUrl.startsWith("https://")',
+    'previewStatus === "Build required"',
+    'GenUI.issueNewTurn(',
+    'Do not execute or deploy anything.',
+    'Host layouts without native buttons',
+):
+    if token not in preview:
+        fail(f"preview.md: missing functional or safety condition {token!r}")
+blocks = re.findall(r"```json\\n(.*?)\\n```", preview, re.S)
+if len(blocks) != 1:
+    fail("preview.md: expected exactly one JSON scenario contract")
+else:
+    try:
+        scenarios = json.loads(blocks[0])["scenarios"]
+        by_id = {item["id"]: item for item in scenarios}
+        expected = {
+            "pages_verified": ("verified_https_url", "Available", ["open"]),
+            "pages_guessed": ("guessed_url", "Unavailable", []),
+            "pages_access_denied": ("fetch_error", "Error", []),
+            "screenshot_verified": ("verified_image", "Screenshot", []),
+            "vite_no_deploy": ("buildable_source", "Build required", ["prepare"]),
+            "markdown_only": ("verified_markdown_file", "File", []),
+            "backend_only": ("backend_only", "Unavailable", []),
+        }
+        if len(scenarios) != len(by_id) or set(by_id) != set(expected):
+            fail("preview.md: missing/duplicate/unexpected preview scenarios")
+        for name, (evidence, status, actions) in expected.items():
+            item = by_id.get(name, {})
+            if (item.get("evidence"), item.get("status"), item.get("actions")) != (evidence, status, actions):
+                fail(f"preview.md: incorrect scenario {name}")
+            if item.get("writes") is not False:
+                fail(f"preview.md: discovery scenario {name} must never write")
+            if "open" in item.get("actions", []) and item.get("evidence") != "verified_https_url":
+                fail(f"preview.md: unverified URL opens in {name}")
+            if "prepare" in item.get("actions", []) and item.get("status") != "Build required":
+                fail(f"preview.md: prepare should only request approval for buildable source in {name}")
+    except (ValueError, KeyError, TypeError) as exc:
+        fail(f"preview.md: invalid JSON scenario contract: {exc}")
 for required in ("AGENTS.md", "README.md"):
     if not (ROOT / required).is_file():
         fail(f"missing {required}")
