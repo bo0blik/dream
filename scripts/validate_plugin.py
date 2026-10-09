@@ -98,6 +98,76 @@ for rule in ("future task scope is unknown", "directory ancestry", "before"):
         fail(f"Overview missing scoped nested AGENTS safeguard: {rule}")
 if "read-only initialization" not in overview or "No GitHub writes during initialization" not in overview:
     fail("Overview does not enforce read-only initialization")
+# Preview instructions remain three-layered, contextual and approval-gated.
+preview = (ROOT / "skills/github-development/references/preview.md").read_text(encoding="utf-8")
+agents = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
+for label, data, required in (
+    ("AGENTS.md", agents, ("Project Preview policy", "Gate A/B", "Split View", "private")),
+    ("SKILL.md", overview, ("Context-aware Project Preview", "references/preview.md", "Build required", "Open Preview", "Gate A/B")),
+    ("preview.md", preview, ("GitHub Pages", "Available", "Screenshot", "Build required", "Unavailable", "Error", "Split View", "read-only", "untrusted", "Markdown", "Vite", "React")),
+):
+    for token in required:
+        if token not in data:
+            fail(f"{label}: missing required preview rule {token!r}")
+if "a fifth mandatory Repo → Rules → Docs → Tasks stage" not in agents:
+    fail("Preview must remain contextual, not a fifth onboarding stage")
+if "Do not execute untrusted code" not in agents:
+    fail("Preview must prohibit unauthorized execution")
+if "never" not in preview.lower() or "verify" not in preview.lower():
+    fail("Preview must document verification and negative paths")
+# Verify the canonical native UI and deterministic policy scenarios.
+for token in (
+    'GenUI.openUrl(verifiedUrl)',
+    'previewStatus === "Available" && urlVerified === true && typeof verifiedUrl === "string" && verifiedUrl.startsWith("https://")',
+    'previewStatus === "Build required"',
+    'GenUI.issueNewTurn(',
+    'Do not execute or deploy anything.',
+    'Host layouts without native buttons',
+):
+    if token not in preview:
+        fail(f"preview.md: missing functional or safety condition {token!r}")
+# Fail closed: the canonical UI must not ship with a fabricated active deployment.
+for token in ('{@body const verifiedUrl = null}',
+              '{@body const urlVerified = false}',
+              '{@body const previewStatus = "Unavailable"}'):
+    if token not in preview:
+        fail(f"preview.md: unsafe default in native preview template: {token}")
+if re.search(r'(?m)^\\{@body const verifiedUrl\\s*=\\s*["\\\']https?://', preview):
+    fail("preview.md: canonical preview must not hard-code a URL")
+if '{@body const previewStatus = "Available"}' in preview:
+    fail("preview.md: canonical preview must not start in Available state")
+if "never infer verification from the URL prefix alone" not in preview:
+    fail("preview.md: URL prefix must not be used as verification evidence")
+blocks = re.findall(r"```json\n(.*?)\n```", preview, re.S)
+if len(blocks) != 1:
+    fail("preview.md: expected exactly one JSON scenario contract")
+else:
+    try:
+        scenarios = json.loads(blocks[0])["scenarios"]
+        by_id = {item["id"]: item for item in scenarios}
+        expected = {
+            "pages_verified": ("verified_https_url", "Available", ["open"]),
+            "pages_guessed": ("guessed_url", "Unavailable", []),
+            "pages_access_denied": ("fetch_error", "Error", []),
+            "screenshot_verified": ("verified_image", "Screenshot", []),
+            "vite_no_deploy": ("buildable_source", "Build required", ["prepare"]),
+            "markdown_only": ("verified_markdown_file", "File", []),
+            "backend_only": ("backend_only", "Unavailable", []),
+        }
+        if len(scenarios) != len(by_id) or set(by_id) != set(expected):
+            fail("preview.md: missing/duplicate/unexpected preview scenarios")
+        for name, (evidence, status, actions) in expected.items():
+            item = by_id.get(name, {})
+            if (item.get("evidence"), item.get("status"), item.get("actions")) != (evidence, status, actions):
+                fail(f"preview.md: incorrect scenario {name}")
+            if item.get("writes") is not False:
+                fail(f"preview.md: discovery scenario {name} must never write")
+            if "open" in item.get("actions", []) and item.get("evidence") != "verified_https_url":
+                fail(f"preview.md: unverified URL opens in {name}")
+            if "prepare" in item.get("actions", []) and item.get("status") != "Build required":
+                fail(f"preview.md: prepare should only request approval for buildable source in {name}")
+    except (ValueError, KeyError, TypeError) as exc:
+        fail(f"preview.md: invalid JSON scenario contract: {exc}")
 for required in ("AGENTS.md", "README.md"):
     if not (ROOT / required).is_file():
         fail(f"missing {required}")

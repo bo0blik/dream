@@ -6,6 +6,12 @@
 - Issue approval → plan approval → branch/commits/CI/PR → explicit merge approval. Never force-push, bypass checks or overwrite unrelated work.
 - Keep `plugin.json` and `.codex-plugin/plugin.json` consistent. Run `python3 scripts/validate_plugin.py` and inspect Actions results before proposing merge.
 
+## Project Preview policy
+
+Offer Project Preview when requested or when visual inspection materially helps UI, design or gameplay review. Prefer verified existing deployments and authentic screenshots over new builds. Discovery is read-only and never adds a fifth mandatory Repo → Rules → Docs → Tasks stage.
+
+Do not execute untrusted code, install packages, create deployments, change GitHub Pages settings or expose private source/content without the relevant explicit authorization and existing Gate A/B. Viewing permission is not publishing permission. Never disclose private files, tokens or secrets through a URL, screenshot or build. Do not claim a GitHub Pages URL is live without verification or claim Split View opened unless confirmed by the host. Follow `skills/github-development/references/preview.md` for detailed discovery, UI and fallback rules.
+
 ## Hard authorization gates (mandatory, fail closed)
 
 A user request to implement, fix, enhance or continue work is **not** authorization to create an Issue or modify GitHub. Before **any GitHub write**, require an explicit real user message approving the applicable draft or plan; distinguish it from an assistant-generated recommendation or a previous task's approval.
