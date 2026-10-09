@@ -59,6 +59,14 @@ for file in skills:
     for ref in re.findall(r"`(references/[^\`]+\.md)`", data):
         if not (file.parent / ref).is_file():
             fail(f"{file}: missing {ref}")
+# Regression checks for the two independent, user-approved write gates.
+for policy_file in (ROOT / "AGENTS.md", ROOT / "skills/github-development/SKILL.md"):
+    policy = policy_file.read_text(encoding="utf-8")
+    for rule in ("Gate A", "Gate B", "Approve Issue", "Approve Plan", "real user", "Merge"):
+        if rule.lower() not in policy.lower():
+            fail(f"{policy_file.relative_to(ROOT)}: missing authorization rule {rule!r}")
+    if policy.index("Gate A") > policy.index("Gate B"):
+        fail(f"{policy_file.relative_to(ROOT)}: Issue gate must precede plan gate")
 for required in ("AGENTS.md", "README.md"):
     if not (ROOT / required).is_file():
         fail(f"missing {required}")

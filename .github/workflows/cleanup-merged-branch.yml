@@ -1,0 +1,37 @@
+name: Clean merged feature branch
+on:
+  pull_request:
+    types: [closed]
+permissions:
+  contents: write
+  pull-requests: read
+jobs:
+  cleanup:
+    if: github.event.pull_request.merged == true && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    concurrency:
+      group: clean-merged-${{ github.event.pull_request.head.ref }}
+      cancel-in-progress: false
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+      HEAD_REF: ${{ github.event.pull_request.head.ref }}
+      HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+    steps:
+      - name: Delete only an unchanged and unused merged branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          DEFAULT=$(gh api "repos/$REPO" --jq '.default_branch')
+          if [[ "$HEAD_REF" == "$DEFAULT" ]]; then echo "Skip default branch"; exit 0; fi
+          CURRENT=$(gh api "repos/$REPO/branches/$HEAD_REF" 2>/dev/null) || { echo "Branch already removed"; exit 0; }
+          PROTECTED=$(jq -r '.protected' <<< "$CURRENT")
+          SHA=$(jq -r '.commit.sha' <<< "$CURRENT")
+          if [[ "$PROTECTED" == "true" || "$SHA" != "$HEAD_SHA" ]]; then echo "Skip protected or changed branch"; exit 0; fi
+          OPEN=$(gh api --paginate --slurp "repos/$REPO/pulls?state=open&per_page=100" | jq --arg name "$HEAD_REF" --arg repo "$REPO" '[.[][] | select(.head.ref == $name and .head.repo.full_name == $repo)] | length')
+          if [[ "$OPEN" != "0" ]]; then echo "Skip branch used by an open PR"; exit 0; fi
+          # Recheck immediately before deletion; the GitHub delete-ref API has no SHA precondition.
+          LATEST=$(gh api "repos/$REPO/branches/$HEAD_REF" --jq '.commit.sha') || { echo "Branch removed before cleanup"; exit 0; }
+          if [[ "$LATEST" != "$HEAD_SHA" ]]; then echo "Skip branch changed during cleanup"; exit 0; fi
+          gh api -X DELETE "repos/$REPO/git/refs/heads/$HEAD_REF"
+          echo "Deleted merged branch: $HEAD_REF"
