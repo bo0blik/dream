@@ -21,6 +21,10 @@ A concise, approval-gated GitHub development orchestrator for ChatGPT.
 
 Ponytail full for tasks and implementations; Grill Me for ambiguous requirements; no unapproved writes, merges, or force pushes. Existing GitHub tools and Actions provide execution and verification. All plugin instructions are in English; responses match the user's language.
 
+## Interactive repository onboarding
+
+After selecting a repository, Dream automatically reads root and applicable nested AGENTS.md / AGENT.md instructions, README, open Issues and open PRs without another request. The mandatory native Repository Overview displays **Repo → Rules → Docs → Tasks** as clickable stages with icons and honest completion/error states. Only the selected stage's details are visible; switching stages reuses fetched context. Rules lists sourced instructions, Docs summarizes project context and Tasks shows actual linked open work by default. Missing files, failed reads and unsupported native controls have explicit fallbacks. Onboarding is read-only and never bypasses Gate A/B.
+
 ## Development
 
 Open an Issue with acceptance criteria, approve the plan, implement on a feature branch, validate, and submit a PR. The installed plugin must be updated separately after merge.
