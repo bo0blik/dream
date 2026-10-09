@@ -1,0 +1,25 @@
+{
+  "interface": {
+    "displayName": "Dream",
+    "shortDescription": "GitHub development workflow",
+    "longDescription": "A concise GitHub issue-to-PR development orchestrator using Ponytail, Grill Me, safe approvals and CI.",
+    "developerName": "Никто Никтонов",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive"
+    ],
+    "defaultPrompt": [
+      "Start GitHub Dev Orchestrator. List repositories with a native selection control if available; help me choose an issue.",
+      "Work on a GitHub issue using Ponytail full. Show verified context and obtain plan approval before edits.",
+      "Draft a new GitHub issue; inspect evidence, invoke Ponytail full, and offer Grill Me if requirements are unclear."
+    ]
+  },
+  "name": "github-dev-orchestrator",
+  "version": "0.5.0",
+  "description": "Dream: a compact, safe GitHub issue-to-PR workflow.",
+  "author": {
+    "name": "Никто Никтонов"
+  },
+  "keywords": [],
+  "skills": "./skills"
+}
