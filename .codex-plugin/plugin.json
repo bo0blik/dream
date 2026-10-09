@@ -17,7 +17,7 @@
     "composerIcon": "assets/dream-icon.svg"
   },
   "name": "github-dev-orchestrator",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "description": "Dream: a compact, safe GitHub issue-to-PR workflow.",
   "author": {
     "name": "Никто Никтонов"
