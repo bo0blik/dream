@@ -25,6 +25,10 @@ Ponytail full for tasks and implementations; Grill Me for ambiguous requirements
 
 After selecting a repository, Dream automatically reads root and applicable nested AGENTS.md / AGENT.md instructions, README, open Issues and open PRs without another request. The mandatory native Repository Overview displays **Repo → Rules → Docs → Tasks** as clickable stages with icons and honest completion/error states. Only the selected stage's details are visible; switching stages reuses fetched context. Rules lists sourced instructions, Docs summarizes project context and Tasks shows actual linked open work by default. Missing files, failed reads and unsupported native controls have explicit fallbacks. Onboarding is read-only and never bypasses Gate A/B.
 
+## Context-aware Project Preview
+
+Dream can offer optional Project Preview for websites, HTML games and UI changes. It prefers verified existing GitHub Pages or other deployments and genuine project screenshots. A compact preview card has truthful Available, Screenshot, Build required, Unavailable or Error states; Open Preview links to verified pages, while Split View availability depends on the ChatGPT host. Never assume a guessed URL is live, execute unfamiliar builds, change GitHub Pages settings or publish private code without authorization. Preview does not add a fifth mandatory Repository Overview stage. The policy, workflow and detailed decisions live in AGENTS.md, the github-development skill and its references/preview.md.
+
 ## Development
 
 Open an Issue with acceptance criteria, approve the plan, implement on a feature branch, validate, and submit a PR. The installed plugin must be updated separately after merge.
