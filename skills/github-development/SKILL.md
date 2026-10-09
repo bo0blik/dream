@@ -32,3 +32,10 @@ Consult `references/gates.md` for safety and `references/templates.md` for short
 
 ## Maintaining Dream itself
 When the selected repository is `bo0blik/dream`, read its current `AGENTS.md` before work. All self-improvements use the normal approved Issue → Plan → branch → CI → PR workflow. After **approved merge**, offer a separate ChatGPT plugin release; do not imply merging deploys Dream. For release, follow `AGENTS.md`: read merged `main`, validate manifests/skills and version, obtain distinct publication approval, update the **same private plugin** via Plugin Creator with release guard, then read back and verify. If Plugin Creator is unavailable, state the blocker. Never silently modify the installed plugin, publish from an unmerged branch, or call an unverified release successful.
+
+## Mandatory language policy
+
+- Write code, comments, tests, configuration, documentation, GitHub Issues, PRs, reviews, branches, commit messages and release notes in **English**.
+- Translate user requirements into English before writing GitHub artifacts; preserve external API contracts and existing identifiers.
+- Respond in the user's language when clear, otherwise English. Localize ChatGPT UI labels, not code identifiers.
+- Apply this rule to new or edited content; do not rewrite unrelated legacy code solely for translation.
