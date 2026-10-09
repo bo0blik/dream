@@ -59,14 +59,44 @@ for file in skills:
     for ref in re.findall(r"`(references/[^\`]+\.md)`", data):
         if not (file.parent / ref).is_file():
             fail(f"{file}: missing {ref}")
-# Regression checks for the two independent, user-approved write gates.
-for policy_file in (ROOT / "AGENTS.md", ROOT / "skills/github-development/SKILL.md"):
-    policy = policy_file.read_text(encoding="utf-8")
-    for rule in ("Gate A", "Gate B", "Approve Issue", "Approve Plan", "real user", "Merge"):
-        if rule.lower() not in policy.lower():
-            fail(f"{policy_file.relative_to(ROOT)}: missing authorization rule {rule!r}")
-    if policy.index("Gate A") > policy.index("Gate B"):
-        fail(f"{policy_file.relative_to(ROOT)}: Issue gate must precede plan gate")
+# Root AGENTS.md contains only the agreed 12 project-specific rules.
+agents = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
+project_rules = [line for line in agents.splitlines() if line.startswith("- ")]
+if agents.splitlines()[0] != "# Dream — Project Rules" or len(project_rules) != 13:
+    fail("AGENTS.md must contain the agreed heading and 13 project rules, including Skill Check")
+if not project_rules or project_rules[0] != "- Before starting each new task, consult `skills/github-development/SKILL.md` and follow its applicable workflow. Do not rely on remembered instructions from previous tasks.":
+    fail("AGENTS.md: mandatory Skill Check must be first")
+if any(line.startswith("## ") for line in agents.splitlines()):
+    fail("AGENTS.md must be a simple list without workflow sections")
+for token in ("plugin.json", ".codex-plugin/plugin.json", "Ponytail", "Grill Me",
+              "scripts/validate_plugin.py", "GitHub Actions", "README.md", "secrets"):
+    if token not in agents:
+        fail(f"AGENTS.md: missing project rule {token!r}")
+if any(token in agents for token in ("Gate A", "Gate B", "Gate C", "Split View", "Plugin Creator")):
+    fail("AGENTS.md must not duplicate skill workflow instructions")
+# Skill Check applies before each task while reusing verified same-task context.
+required_skill_check = ("## Mandatory Skill Check", "Before starting each new GitHub development task",
+                        "re-check when the repository or skill changes",
+                        "Do not rely solely on remembered instructions from previous tasks",
+                        "This check never replaces Gate A, Gate B, merge approval or publication approval")
+skill_text = (ROOT / "skills/github-development/SKILL.md").read_text(encoding="utf-8")
+for rule in required_skill_check:
+    if rule not in skill_text:
+        fail(f"SKILL.md: missing required Skill Check safeguard {rule!r}")
+# Authorization rules belong to the development skill and existing gates reference.
+skill_policy = (ROOT / "skills/github-development/SKILL.md").read_text(encoding="utf-8")
+gate_policy = (ROOT / "skills/github-development/references/gates.md").read_text(encoding="utf-8")
+for rule in ("Gate A", "Gate B", "Approve Issue", "Approve Plan", "real user", "Merge"):
+    if rule.lower() not in skill_policy.lower():
+        fail(f"SKILL.md: missing authorization rule {rule!r}")
+if skill_policy.index("Gate A") > skill_policy.index("Gate B"):
+    fail("SKILL.md: Issue gate must precede plan gate")
+for rule in ("Gate A", "Gate B", "Gate C", "read-only", "AGENTS.md"):
+    if rule not in gate_policy:
+        fail(f"gates.md: missing safeguard {rule!r}")
+for rule in ("publication approval", "merge approval", "No GitHub writes during initialization"):
+    if rule.lower() not in skill_policy.lower():
+        fail(f"SKILL.md: missing separation or read-only rule {rule!r}")
 # Regression coverage for mandatory read-only repository onboarding.
 overview = (ROOT / "skills/github-development/SKILL.md").read_text(encoding="utf-8")
 template = (ROOT / "skills/github-development/references/templates.md").read_text(encoding="utf-8")
@@ -102,17 +132,16 @@ if "read-only initialization" not in overview or "No GitHub writes during initia
 preview = (ROOT / "skills/github-development/references/preview.md").read_text(encoding="utf-8")
 agents = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
 for label, data, required in (
-    ("AGENTS.md", agents, ("Project Preview policy", "Gate A/B", "Split View", "private")),
     ("SKILL.md", overview, ("Context-aware Project Preview", "references/preview.md", "Build required", "Open Preview", "Gate A/B")),
     ("preview.md", preview, ("GitHub Pages", "Available", "Screenshot", "Build required", "Unavailable", "Error", "Split View", "read-only", "untrusted", "Markdown", "Vite", "React")),
 ):
     for token in required:
         if token not in data:
             fail(f"{label}: missing required preview rule {token!r}")
-if "a fifth mandatory Repo → Rules → Docs → Tasks stage" not in agents:
-    fail("Preview must remain contextual, not a fifth onboarding stage")
-if "Do not execute untrusted code" not in agents:
-    fail("Preview must prohibit unauthorized execution")
+if "must not" not in overview or "mandatory Repo → Rules → Docs → Tasks" not in overview:
+    fail("Preview must not extend mandatory onboarding")
+if "Execution of repository code" not in preview or "explicit user authorization" not in preview:
+    fail("Preview must prohibit unapproved execution or publication")
 if "never" not in preview.lower() or "verify" not in preview.lower():
     fail("Preview must document verification and negative paths")
 # Verify the canonical native UI and deterministic policy scenarios.

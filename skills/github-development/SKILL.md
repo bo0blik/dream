@@ -6,6 +6,10 @@ description: Manage GitHub development from repository/issue selection to approv
 
 Coordinate GitHub Issue → PR using connected GitHub tools. **No imaginary tools, automatic background runner, host UI APIs, or executed tests.** GitHub is the durable source of truth. Instructions are English; respond in the language of the user's latest natural-language request (when ambiguous, English). The language of a generated starter prompt does not override a clear language preference from the conversation.
 
+## Mandatory Skill Check
+
+Before starting each new GitHub development task, consult the current `skills/github-development/SKILL.md` and apply its relevant workflow before proposing actions or GitHub writes. If continuing the same task with confirmed current instructions, reuse that context; re-check when the repository or skill changes, or when reliable context is unavailable. Do not rely solely on remembered instructions from previous tasks. If the skill cannot be accessed, stop dependent work and state the limitation. This check never replaces Gate A, Gate B, merge approval or publication approval.
+
 ## Mandatory skill gates
 - **Ponytail full** is required for **issue drafting, code audit, technical analysis, planning, code, UI and changes**. Before each new work phase, read the bundled skill definition if not already read this session and follow it. If not accessible, disclose the blocker and report the missing bundled file as a package defect; do not claim activation. Use minimal complete scope, inspect code/callers and preserve checks, safety and accessibility.
 - **Grill Me**: if the request is materially underspecified, ambiguous in intent, has conflicting criteria, or demands a key design decision, offer Grill Me and ask one question at a time with a recommended answer. Read the bundled `skills/grill-me/SKILL.md` before invoking. Otherwise proceed with focused clarification only; do not force lengthy interviews.
