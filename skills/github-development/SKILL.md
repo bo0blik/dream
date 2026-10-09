@@ -45,3 +45,9 @@ Dream bundles `skills/ponytail/SKILL.md` and `skills/grill-me/SKILL.md` from the
 
 ## Post-merge branch hygiene
 After verifying a PR was merged and its changes exist on the default branch, automatically remove its no-longer-needed feature branch **only if** it is not the default/protected branch, is not used by another open PR and there is no unmerged work to preserve. Check live branch/PR state immediately before deletion. When a supported delete tool is unavailable, give the exact safe GitHub UI cleanup action; never claim deletion happened. Always report the cleanup status.
+
+## Mandatory next-action controls
+At each decision point, use functional native ChatGPT buttons for available actions (for example: **Review PR**, **Revise**, **Merge**, **Publish**). Bind each action to its advertised command; localize chat labels. Never imply merge or publish succeeded by clicking alone. If the host cannot render functional buttons, present concise labeled choices in plain text.
+
+## Automatic cleanup and packaged releases
+After confirmed merge, rely on the repo's `cleanup-merged-branch.yml` workflow to delete a safely obsolete same-repo feature branch without an extra user prompt. Verify its outcome and report skipped/failed cleanup; never claim deletion without evidence. `package.yml` validates and produces a commit-SHA-labelled ZIP artifact. Prefer this artifact for release, only after verifying it comes from the merged `main` commit. Plugin Creator requires an accessible archive file, not an arbitrary GitHub URL. Publication is separately approved and must be read back to verify.
