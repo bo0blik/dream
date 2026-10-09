@@ -24,3 +24,17 @@ Ponytail full for tasks and implementations; Grill Me for ambiguous requirements
 ## Development
 
 Open an Issue with acceptance criteria, approve the plan, implement on a feature branch, validate, and submit a PR. The installed plugin must be updated separately after merge.
+
+## Branding and included skills
+
+Dream icon: [`assets/dream-icon.svg`](assets/dream-icon.svg). The original emblem is included as a portable vector asset; application icon rendering depends on the ChatGPT plugin host's supported manifest settings.
+
+Bundled MIT-licensed skills:
+- [Ponytail](skills/ponytail/SKILL.md), original: https://github.com/DietrichGebert/ponytail
+- [Grill Me](skills/grill-me/SKILL.md), original: https://github.com/satya-janghu/agent-skills/tree/main/skills/grill-me
+
+GitHub Actions periodically checks upstream and opens an update PR; it never automatically merges or publishes outside changes.
+
+## Branch cleanup
+
+After each merged PR, remove the feature branch if it is safely obsolete. Preserve the default/protected branch and unfinished work. If deletion is not supported by the connected agent, use the GitHub **Delete branch** control on the merged PR.
