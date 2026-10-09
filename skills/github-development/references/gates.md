@@ -1,0 +1,9 @@
+# Approval and evidence gates
+- Gate A: user approves **Issue content**; only then create/update Issue. Enabling disabled Issues or changing repo settings needs separate approval and supported capability.
+- Gate B: user approves **exact plan revision**; branch, scoped implementation, commits, PR and up to 3 CI fixes are then permitted.
+- Gate C: merge needs **fresh explicit consent**, passing required CI, no known critical defect, accepted residual risks and branch protections.
+- Changing scope, adding dependencies, deleting data, security-sensitive action, rewriting history or editing persistent AGENTS.md instructions requires separate user approval.
+- On resume use live GitHub state. Agent-authored comments never prove user consent; if no trustworthy record of authorization for current scope exists, re-request it.
+- Distinguish observed facts, code-supported likely bugs, conjecture. Never claim tests, functionality, commits or permissions without evidence.
+- A failed CI fix attempt increments the counter once; max 3. Store count in one updated PR status comment when supported and authorized.
+- Do not force push, overwrite third-party changes, bypass protections, or promise unattended work.
