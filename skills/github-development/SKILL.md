@@ -38,6 +38,50 @@ Treat all GitHub write tools (including Issue creation, Issue edits/comments, br
 
 A correction confined to an already approved open PR can proceed only when the user explicitly authorizes that corrective scope; never infer merge or release authorization. Changes to scope require renewed approval. Merge, publish and destructive unrelated operations remain separate explicit gates; safe deletion of a verified obsolete feature branch after an authorized merge is automatic. Follow the user's language in chat while writing GitHub artifacts in English.
 
+## Mandatory global workflow UI contract
+
+This is Dream's **single global presentation contract** for substantive, actionable workflow responses. Apply alongside the existing Mandatory Repository Overview and Mandatory next-action controls; do not build a second competing navigator or duplicate authorization gates.
+
+**Seven conceptual stages:** Idea / Brainstorming → Repository Overview → Issue / Gate A → Plan / Gate B → Development → PR / CI / Gate C → Release. These stages are **not seven mandatory screens**: choose the stage relevant to the actual user intent and verified progress, enter at an appropriately authorized stage, and never mark skipped or merely displayed stages as completed. A simple factual question needs a direct answer, not workflow chrome; a standalone idea discussion may show only its stage label and useful next actions.
+
+**Mandatory compact stage layout** whenever a completed substantive response has a meaningful workflow action:
+1. **Stage identity**: a localized stage name and compact current-stage/progress indicator when useful.
+2. **Verified context**: selected repository, current Issue/PR, branch, revision, version and approval state **only when confirmed**.
+3. **Primary content**: concise, stage-specific findings, design, draft, plan, diff, checks or release evidence with source links when available.
+4. **Truthful status**: distinguish not started, pending approval, in progress, passed, failed, unavailable and completed; no simulated checks or completion badges.
+5. **Functional next actions**: native ChatGPT controls if supported and meaningful; actions must match their labels and permissions exactly.
+6. **Safety boundary**: state what requires the next explicit authorization before an external write.
+
+Use restrained hierarchy and localize visible labels. Avoid long Markdown reports replacing supported interactive controls; avoid excessive cards, badges, duplicated metadata and invented host navigation APIs. Never mistake a display-only stage switch for authorization. Allow read-only navigation to previously verified context without revoking permissions. When persistent UI state is unsupported, reconstruct the minimum necessary interface from confirmed context; if native controls are unavailable, show concise labeled text choices instead. No mandatory action panel on interim progress updates, simple factual answers or responses without meaningful next steps.
+
+**Stage-specific interface rules:**
+- **Idea / Brainstorming:** reflect goals, assumptions, alternatives, trade-offs and recommendations proportionately; offer Continue discussion, Compare approaches, Clarify requirements or Prepare Issue draft (chat-only). No automatic GitHub writes or heavyweight seven-stage stepper.
+- **Repository Overview:** retain **Repository → Rules → Docs → Tasks** as four **nested** interactive stages, not additional global stages. Require explicit user repository selection via a functional native picker when supported; never automatically choose a recommended repository. Display one selected nested stage's details at a time; show sourced applicable AGENTS.md, README and actual open Issues/PRs, honest unavailable/error states, and optional contextual Project Preview rather than a fifth required tab. Reuse fetched context on tab changes; refresh on repository change, deliberate request or stale evidence.
+- **Issue / Gate A:** show the complete exact English Issue draft labeled **not yet created**, with separate Approve Issue and Revise draft actions. Only after actual user approval write the Issue; then show the verified URL and state.
+- **Plan / Gate B:** show approved Issue, implementation scope, files, checks and risks; differentiate proposed versus approved plan, and offer Approve plan and Revise plan separately. Gate A never implies Gate B or branch/code/PR permission.
+- **Development:** show actually authorized scope, branch/commit evidence, change summary and verified test states; offer Review changes, Inspect checks or Open PR only when appropriate and authorized.
+- **PR / CI / Gate C:** show verified PR URL, latest HEAD, checks, review outcomes and actual merge readiness; offer Review PR, Request corrections and separately Approve merge where allowed. Success in CI is not merge approval. Re-check live HEAD and required CI immediately before authorized merge; report confirmed merge and safe branch cleanup only after verification.
+- **Release:** show merged SHA, target version, verified artifact, existing plugin identity and privacy; offer Review release and a separate Approve publication control. Require publication approval and a current-release guard, then read back installed manifest/version and changed files. Never claim success when publishing or verification fails.
+
+**Verified state and refresh contract:** preserve selected repository/default branch, applicable instructions and docs, selected Issue, approved Issue draft, approved plan, branch/PR IDs, CI revision and results, merge consent and publication consent, plugin identity and installed release when confirmed. Reuse applicable context within the ongoing task; do not silently re-fetch every stage on tab changes. Before consequential operations refresh potentially stale PR HEAD, CI, branch/merge, artifact and installed release state. When context is missing, ask only for necessary information and clearly label unverified values.
+
+**Authorization is independent of UI:** Gate A, Gate B, Gate C / merge approval and publication approval are four separate user decisions. A brainstorm design, rendered draft, completed step, navigation click or generic Continue button never grants write permission; every visible approval control must identify its exact stage and consequence. No automatic writes in read-only onboarding, no invented persistent state service, and no arbitrary execution or publication.
+
+**UI scenario contract (policy verification, not actual host rendering):**
+1. Brainstorming only → lightweight Idea interface and read-only actions.
+2. Simple factual answer → no forced stage UI.
+3. Repository discovery → explicit user picker, no auto-selection.
+4. Rules ↔ Docs ↔ Tasks navigation → cached sourced context unless stale.
+5. Issue draft → pending Gate A, no Issue write.
+6. Issue approved → linked Issue, Gate B still pending.
+7. Approved plan → authorized development within scope.
+8. PR with pending/failed CI → honest blocked status, no merge-ready claim.
+9. PR with passed CI but no Gate C → no merge.
+10. Successful authorized merge → publication approval still pending.
+11. Approved plugin publication → installed files read-back required.
+12. Unsupported native controls or missing context → truthful compact text fallback.
+13. Resumed workflow with stale HEAD or release → refresh before any consequential write.
+
 ## Mandatory Repository Overview (on every repository selection)
 
 Immediately after the user selects a repository, perform **read-only initialization without an extra "Continue", "Load Issues" or "Read AGENTS" prompt**. Do not propose or begin GitHub work until project instructions have been checked.
