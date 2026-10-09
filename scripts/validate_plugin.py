@@ -197,6 +197,49 @@ else:
                 fail(f"preview.md: prepare should only request approval for buildable source in {name}")
     except (ValueError, KeyError, TypeError) as exc:
         fail(f"preview.md: invalid JSON scenario contract: {exc}")
+# Brainstorming discovery, pinned attribution, read-only routing and next actions.
+brainstorm = (ROOT / "skills/brainstorming/SKILL.md").read_text(encoding="utf-8")
+brain_license = (ROOT / "skills/brainstorming/LICENSE").read_text(encoding="utf-8")
+pin = "8ca22dba9a94f28898bbce59f2537ff4d87c747d"
+for term in (f"Pinned revision: \`{pin}\`", "Spike", "Bounded", "Architectural",
+             "read-only", "Gate A", "Gate B", "merge consent", "publication consent",
+             "Draft Issue", "unavailable"):
+    # Pin formatting is checked separately to avoid interpretation of Markdown markup.
+    if term.startswith("Pinned revision:"):
+        continue
+    if term.lower() not in brainstorm.lower():
+        fail(f"brainstorming: missing required method/safety instruction {term!r}")
+if pin not in brainstorm or "obra/superpowers" not in brainstorm:
+    fail("brainstorming: missing pinned upstream provenance")
+if "MIT License" not in brain_license or "Copyright (c) 2025 Jesse Vincent" not in brain_license:
+    fail("brainstorming: missing upstream MIT license and attribution")
+for term in ("## Intent-aware skill routing", "skills/brainstorming/SKILL.md",
+             "Brainstorming", "Grill Me", "Ponytail full",
+             "Direct answer", "Gate A", "Gate B", "never authorize any GitHub write"):
+    if term not in overview:
+        fail(f"SKILL.md: missing intent routing {term!r}")
+for term in ("completed substantive Dream response", "functional native ChatGPT buttons",
+             "exactly the advertised action", "Draft Issue (chat-only)",
+             "text alternatives", "Gate A, Gate B, merge and publication"):
+    if term not in overview:
+        fail(f"SKILL.md: missing next-action requirement {term!r}")
+# Static policy scenario matrix; these assert routing intent and authorization boundaries.
+scenarios = {
+    "game_idea": ("Brainstorming", False),
+    "architecture_comparison": ("Brainstorming", False),
+    "conflicting_requirements": ("Grill Me", False),
+    "routine_fix": ("Dream + Ponytail full", False),
+    "design_approved": ("Brainstorming", False),
+    "implementation_requested": ("Dream + Ponytail full", False),
+    "resumed_idea": ("Brainstorming", False),
+    "simple_fact": ("Direct answer", False),
+    "unsupported_upstream_tool": ("Brainstorming", False),
+    "private_repository": ("Brainstorming", False),
+}
+if len(scenarios) != 10 or any(mode not in overview or writes for mode, writes in scenarios.values()):
+    fail("brainstorming: invalid routing scenario matrix")
+if "Design approval" not in brainstorm and "design approval" not in brainstorm:
+    fail("brainstorming: design approval cannot grant write access")
 for required in ("AGENTS.md", "README.md"):
     if not (ROOT / required).is_file():
         fail(f"missing {required}")
