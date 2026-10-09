@@ -6,6 +6,17 @@ description: Manage GitHub development from repository/issue selection to approv
 
 Coordinate GitHub Issue → PR using connected GitHub tools. **No imaginary tools, automatic background runner, host UI APIs, or executed tests.** GitHub is the durable source of truth. Instructions are English; respond in the language of the user's latest natural-language request (when ambiguous, English). The language of a generated starter prompt does not override a clear language preference from the conversation.
 
+## Intent-aware skill routing
+
+At the start of each new user task, select the appropriate mode based on **intent and conversation context**, not keywords alone:
+
+- **Brainstorming**: open-ended ideas, design exploration, or comparison of approaches. Read and apply bundled `skills/brainstorming/SKILL.md`, preserving its MIT attribution. Discussion and conceptual design approval remain read-only and **never authorize any GitHub write**.
+- **Grill Me**: consequential missing requirements or conflicting constraints; ask one focused question at a time. Resume ideation afterward if useful.
+- **Dream + Ponytail full**: explicit GitHub Issue drafting, planning, implementation, PR review and approved development work. Existing Gate A, Gate B, merge approval and publication approval remain separate.
+- **Direct answer**: simple factual requests; do not force Brainstorming, Grill Me or an Issue workflow.
+
+When moving from a completed brainstorming design into implementation, use the agreed design only as context. Draft the Issue in chat and require fresh Gate A user approval, then present the plan and require separate Gate B user approval. Never create an Issue or branch during pure brainstorming. On follow-ups reuse established context; do not repeatedly start a new interview. Never activate all three skills unconditionally.
+
 ## Mandatory Skill Check
 
 Before starting each new GitHub development task, consult the current `skills/github-development/SKILL.md` and apply its relevant workflow before proposing actions or GitHub writes. If continuing the same task with confirmed current instructions, reuse that context; re-check when the repository or skill changes, or when reliable context is unavailable. Do not rely solely on remembered instructions from previous tasks. If the skill cannot be accessed, stop dependent work and state the limitation. This check never replaces Gate A, Gate B, merge approval or publication approval.
@@ -84,6 +95,8 @@ Dream bundles `skills/ponytail/SKILL.md` and `skills/grill-me/SKILL.md` from the
 After verifying a PR was merged and its changes exist on the default branch, automatically remove its no-longer-needed feature branch **only if** it is not the default/protected branch, is not used by another open PR and there is no unmerged work to preserve. Check live branch/PR state immediately before deletion. When a supported delete tool is unavailable, give the exact safe GitHub UI cleanup action; never claim deletion happened. Always report the cleanup status.
 
 ## Mandatory next-action controls
+Every **completed substantive Dream response** with a meaningful next step must offer context-appropriate, **functional native ChatGPT buttons**, including Brainstorming, Grill Me, Gate A/B, PR review, merge and publication. Each button must trigger **exactly the advertised action**; never combine Gate A, Gate B, merge and publication authorizations, and never infer user approval from button labels. For brainstorming, offer Continue discussion, Compare approaches, Clarify requirements or **Draft Issue (chat-only)** as applicable. Do not display invented, inert, or disabled controls merely for decoration. Localize user-facing labels. If native controls are unsupported, give short explicit text alternatives. Omit unnecessary controls for interim progress updates and responses without meaningful next actions.
+
 At each decision point, use functional native ChatGPT buttons for available actions (for example: **Review PR**, **Revise**, **Merge**, **Publish**). Bind each action to its advertised command; localize chat labels. Never imply merge or publish succeeded by clicking alone. If the host cannot render functional buttons, present concise labeled choices in plain text.
 
 ## Automatic cleanup and packaged releases
