@@ -21,4 +21,12 @@ with ZipFile(OUTPUT, "w", ZIP_DEFLATED, compresslevel=9) as zip_file:
         info.compress_type = ZIP_DEFLATED
         info.external_attr = 0o644 << 16
         zip_file.writestr(info, (ROOT / path).read_bytes())
-print(f"Built {OUTPUT.name}: {len(paths)} files")
+with ZipFile(OUTPUT) as zip_file:
+    names = zip_file.namelist()
+    expected = [f"github-dev-orchestrator/{path}" for path in sorted(paths)]
+    if names != expected or zip_file.testzip() is not None:
+        raise SystemExit("Archive entries or CRC validation failed")
+    for path in sorted(paths):
+        if zip_file.read(f"github-dev-orchestrator/{path}") != (ROOT / path).read_bytes():
+            raise SystemExit(f"Archive content mismatch: {path}")
+print(f"Built and verified {OUTPUT.name}: {len(paths)} files")
