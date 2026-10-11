@@ -98,7 +98,7 @@ for heading in expected_headings:
         fail(f"SKILL.md: expected one section {heading}")
 stages = ("Idea / Brainstorming", "Repository Overview", "Issue / Gate A",
           "Plan / Gate B", "Development", "PR / CI / Gate C", "Release")
-stage_sections = re.findall(r"(?ms)^### (\\d+)\\. ([^\\n]+)\\n(.*?)(?=^### |^## |\\Z)", skill_text)
+stage_sections = re.findall(r"(?ms)^### (\d+)\. ([^\n]+)\n(.*?)(?=^### |^## |\Z)", skill_text)
 if len(stage_sections) != 7 or [title for _, title, _ in stage_sections] != list(stages):
     fail("SKILL.md: expected seven ordered workflow stages")
 for index, title, section in stage_sections:
