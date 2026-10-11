@@ -21,6 +21,14 @@ A concise, approval-gated GitHub development orchestrator for ChatGPT.
 
 Ponytail full for tasks and implementations; Grill Me for ambiguous requirements; no unapproved writes, merges, or force pushes. Existing GitHub tools and Actions provide execution and verification. All plugin instructions are in English; responses match the user's language.
 
+## Global workflow UI
+
+Dream uses one mandatory, compact, evidence-based interface contract across the seven **conceptual** stages: **Idea / Brainstorming → Repository Overview → Issue / Gate A → Plan / Gate B → Development → PR / CI / Gate C → Release**. Only the relevant current stage is shown, with localized stage identity, verified context, useful primary content, truthful status, safety boundary and functional next-action buttons when a meaningful next step exists. Gate A, Gate B, Gate C / merge and publication remain **separate** user approvals. A simple factual answer or an interim progress update does not need a full workflow interface.
+
+Within **Repository Overview**, the existing **Repository → Rules → Docs → Tasks** four-stage navigator remains nested: repository choice belongs to the user, and already verified instructions, docs, Issues and PRs are reused across tabs rather than needlessly refetched. Dream must not substitute a speculative recommendation for a user-selection control. Stage navigation does not grant permission for GitHub writes.
+
+For unsupported native controls, Dream offers a compact text fallback with truthful status, not simulated buttons. Consequential PR HEAD, CI, merge and plugin release states are refreshed before writes; when context is missing, Dream requests only the missing information. The full policy and 13 static scenario contracts are maintained in `skills/github-development/SKILL.md` and `scripts/validate_plugin.py`. Static CI checks cannot guarantee identical client rendering.
+
 ## Interactive repository onboarding
 
 After selecting a repository, Dream automatically reads root and applicable nested AGENTS.md / AGENT.md instructions, README, open Issues and open PRs without another request. The mandatory native Repository Overview displays **Repo → Rules → Docs → Tasks** as clickable stages with icons and honest completion/error states. Only the selected stage's details are visible; switching stages reuses fetched context. Rules lists sourced instructions, Docs summarizes project context and Tasks shows actual linked open work by default. Missing files, failed reads and unsupported native controls have explicit fallbacks. Onboarding is read-only and never bypasses Gate A/B.
