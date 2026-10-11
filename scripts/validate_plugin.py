@@ -42,8 +42,8 @@ expected_starter_prompts = [
     "Покажи мои GitHub-репозитории, помоги выбрать проект и найти подходящую задачу. Пока ничего не изменяй.",
     "Помоги выбрать задачу из GitHub Issues, изучить проект и подготовить план реализации. Соблюдай все этапы согласования Dream; не начинай изменения до соответствующего разрешения.",
 ]
-if version != "1.1.2":
-    fail("Dream starter prompts release must use version 1.1.2 in both manifests")
+if version != "1.1.3":
+    fail("Dream starter prompts release must use version 1.1.3 in both manifests")
 if ui.get("defaultPrompt") != expected_starter_prompts:
     fail("plugin.json: defaultPrompt must contain the exact three approved Russian scenarios, in order")
 if cui.get("defaultPrompt") != expected_starter_prompts:
