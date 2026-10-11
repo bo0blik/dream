@@ -27,7 +27,7 @@ Dream uses one mandatory, compact, evidence-based interface contract across the 
 
 Within **Repository Overview**, the existing **Repository → Rules → Docs → Tasks** four-stage navigator remains nested: repository choice belongs to the user, and already verified instructions, docs, Issues and PRs are reused across tabs rather than needlessly refetched. Dream must not substitute a speculative recommendation for a user-selection control. Stage navigation does not grant permission for GitHub writes.
 
-For unsupported native controls, Dream offers a compact text fallback with truthful status, not simulated buttons. Consequential PR HEAD, CI, merge and plugin release states are refreshed before writes; when context is missing, Dream requests only the missing information. The full policy and 13 static scenario contracts are maintained in `skills/github-development/SKILL.md` and `scripts/validate_plugin.py`. Static CI checks cannot guarantee identical client rendering.
+For unsupported native controls, Dream offers a compact text fallback with truthful status, not simulated buttons. Consequential PR HEAD, CI, merge and plugin release states are refreshed before writes; when context is missing, Dream requests only the missing information. The single-file workflow blueprint and safety policy live in `skills/github-development/SKILL.md`; `scripts/validate_plugin.py` checks its seven structured stages and critical safeguards. Static CI checks cannot guarantee identical client rendering.
 
 ## Interactive repository onboarding
 
@@ -35,7 +35,7 @@ After selecting a repository, Dream automatically reads root and applicable nest
 
 ## Context-aware Project Preview
 
-Dream can offer optional Project Preview for websites, HTML games and UI changes. It prefers verified existing GitHub Pages or other deployments and genuine project screenshots. A compact preview card has truthful Available, Screenshot, Build required, Unavailable or Error states; Open Preview links to verified pages, while Split View availability depends on the ChatGPT host. Never assume a guessed URL is live, execute unfamiliar builds, change GitHub Pages settings or publish private code without authorization. Preview does not add a fifth mandatory Repository Overview stage. The policy, workflow and detailed decisions live in AGENTS.md, the github-development skill and its references/preview.md.
+Dream can offer optional Project Preview for websites, HTML games and UI changes. It prefers verified existing GitHub Pages or other deployments and genuine project screenshots. A compact preview card has truthful Available, Screenshot, Build required, Unavailable or Error states; Open Preview links to verified pages, while Split View availability depends on the ChatGPT host. Never assume a guessed URL is live, execute unfamiliar builds, change GitHub Pages settings or publish private code without authorization. Preview does not add a fifth mandatory Repository Overview stage. The consolidated preview safety policy lives in the single-file github-development skill; legacy references remain for compatibility.
 
 ## Brainstorming and intent-aware routing
 
