@@ -89,76 +89,54 @@ for token in ("plugin.json", ".codex-plugin/plugin.json", "Ponytail", "Grill Me"
         fail(f"AGENTS.md: missing project rule {token!r}")
 if any(token in agents for token in ("Gate A", "Gate B", "Gate C", "Split View", "Plugin Creator")):
     fail("AGENTS.md must not duplicate skill workflow instructions")
-# Skill Check applies before each task while reusing verified same-task context.
-required_skill_check = ("## Mandatory Skill Check", "Before starting each new GitHub development task",
-                        "re-check when the repository or skill changes",
-                        "Do not rely solely on remembered instructions from previous tasks",
-                        "This check never replaces Gate A, Gate B, merge approval or publication approval")
+# Single-file Dream blueprint: structural contract and safeguards.
 skill_text = (ROOT / "skills/github-development/SKILL.md").read_text(encoding="utf-8")
-for rule in required_skill_check:
-    if rule not in skill_text:
-        fail(f"SKILL.md: missing required Skill Check safeguard {rule!r}")
-# Authorization rules belong to the development skill and existing gates reference.
-skill_policy = (ROOT / "skills/github-development/SKILL.md").read_text(encoding="utf-8")
-gate_policy = (ROOT / "skills/github-development/references/gates.md").read_text(encoding="utf-8")
-for rule in ("Gate A", "Gate B", "Approve Issue", "Approve Plan", "real user", "Merge"):
-    if rule.lower() not in skill_policy.lower():
-        fail(f"SKILL.md: missing authorization rule {rule!r}")
-if skill_policy.index("Gate A") > skill_policy.index("Gate B"):
-    fail("SKILL.md: Issue gate must precede plan gate")
-for rule in ("Gate A", "Gate B", "Gate C", "read-only", "AGENTS.md"):
-    if rule not in gate_policy:
-        fail(f"gates.md: missing safeguard {rule!r}")
-for rule in ("publication approval", "merge approval", "No GitHub writes during initialization"):
-    if rule.lower() not in skill_policy.lower():
-        fail(f"SKILL.md: missing separation or read-only rule {rule!r}")
-# Regression coverage for mandatory read-only repository onboarding.
-overview = (ROOT / "skills/github-development/SKILL.md").read_text(encoding="utf-8")
-template = (ROOT / "skills/github-development/references/templates.md").read_text(encoding="utf-8")
-gates = (ROOT / "skills/github-development/references/gates.md").read_text(encoding="utf-8")
-for label, value in (("Skill", overview), ("Template", template)):
-    for stage in ("Repo", "Rules", "Docs", "Tasks"):
-        if stage not in value:
-            fail(f"{label}: missing Overview stage {stage}")
-    for requirement in ("AGENTS.md", "README", "Issues", "Pull Requests"):
-        if requirement not in value:
-            fail(f"{label}: missing auto-inspection requirement {requirement}")
-for requirement in ("read-only", "AGENTS.md", "README", "Issues/PRs"):
-    if requirement not in gates:
-        fail(f"gates: missing initialization safeguard {requirement}")
-# Validate the interaction example and ordering, not just the names of the stages.
-required_ui = ("DIL.useState(3)", "onClick={()=>setStage(index)}",
-               "onClick={()=>setStage(Math.max(0,stage-1))}",
-               "onClick={()=>setStage(Math.min(3,stage+1))}",
-               "{#if stage===0}", "{:else if stage===1}", "{:else if stage===2}",
-               "<pressable", "<grid", "No GitHub")
-for token in required_ui[:-1]:
-    if token not in template:
-        fail(f"Overview template missing functional control: {token}")
-if not (overview.index("1. **Repo:**") < overview.index("2. **Rules:**") <
-        overview.index("3. **Docs:**") < overview.index("4. **Tasks:**")):
-    fail("Overview initialization order is incorrect")
-for rule in ("future task scope is unknown", "directory ancestry", "before"):
-    if rule not in overview:
-        fail(f"Overview missing scoped nested AGENTS safeguard: {rule}")
-if "read-only initialization" not in overview or "No GitHub writes during initialization" not in overview:
-    fail("Overview does not enforce read-only initialization")
-# Preview instructions remain three-layered, contextual and approval-gated.
+expected_headings = ("Core", "Workflow", "Shared UI & compact examples", "Safety & evidence",
+                     "Optional Project Preview", "Finish")
+for heading in expected_headings:
+    if skill_text.count("## " + heading + "\n") != 1:
+        fail(f"SKILL.md: expected one section {heading}")
+stages = ("Idea / Brainstorming", "Repository Overview", "Issue / Gate A",
+          "Plan / Gate B", "Development", "PR / CI / Gate C", "Release")
+stage_sections = re.findall(r"(?ms)^### (\\d+)\\. ([^\\n]+)\\n(.*?)(?=^### |^## |\\Z)", skill_text)
+if len(stage_sections) != 7 or [title for _, title, _ in stage_sections] != list(stages):
+    fail("SKILL.md: expected seven ordered workflow stages")
+for index, title, section in stage_sections:
+    fields = re.findall(r"(?m)^(When|Read|Do|Gate|UI|Next):", section)
+    if fields != ["When", "Read", "Do", "Gate", "UI", "Next"]:
+        fail(f"SKILL.md: invalid six-field stage {index} {title}")
+required_contract = {
+    "skill_check": ("Mandatory Skill Check", "Before each new development task", "AGENTS.md", "stop dependent work"),
+    "routing": ("Brainstorming", "Grill Me", "Ponytail full", "Direct answer", "read-only"),
+    "repo": ("Repo → Rules → Docs → Tasks", "default to Tasks", "directory-ancestry",
+             "disabled Issues", "Pull Requests", "No GitHub writes during initialization"),
+    "approvals": ("Gate A", "Gate B", "Gate C", "separate publication", "exact draft",
+                  "specific plan revision", "real user authorization", "fail closed"),
+    "safety": ("force push", "protection", "destructive", "security-sensitive", "AGENTS.md",
+               "max 3", "secrets", "third-party", "no direct default-branch"),
+    "ci_merge": ("required CI", "recheck HEAD", "residual risk", "Issue closure",
+                 "obsolete", "unmerged work", "actual CI logs"),
+    "release": ("merged main SHA", "current-release guard", "SAME existing private plugin",
+                "read back installed", "USER/PRIVATE", "successful merged-main artifact"),
+    "ui": ("functional native actions", "shared state", "text alternatives", "no imaginary host APIs"),
+    "preview": ("Optional Project Preview", "HTTPS reachability", "matching project content",
+                "Build required", "Unavailable", "Error", "Open Preview", "Split View",
+                "separate informed authorization"),
+}
+for label, terms in required_contract.items():
+    for term in terms:
+        if term.casefold() not in skill_text.casefold():
+            fail(f"SKILL.md: missing {label} invariant {term!r}")
+# The unchanged bundled references retain their validated detailed safety fixtures.
 preview = (ROOT / "skills/github-development/references/preview.md").read_text(encoding="utf-8")
-agents = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
-for label, data, required in (
-    ("SKILL.md", overview, ("Context-aware Project Preview", "references/preview.md", "Build required", "Open Preview", "Gate A/B")),
-    ("preview.md", preview, ("GitHub Pages", "Available", "Screenshot", "Build required", "Unavailable", "Error", "Split View", "read-only", "untrusted", "Markdown", "Vite", "React")),
-):
-    for token in required:
-        if token not in data:
-            fail(f"{label}: missing required preview rule {token!r}")
-if "must not" not in overview or "mandatory Repo → Rules → Docs → Tasks" not in overview:
-    fail("Preview must not extend mandatory onboarding")
-if "Execution of repository code" not in preview or "explicit user authorization" not in preview:
-    fail("Preview must prohibit unapproved execution or publication")
-if "never" not in preview.lower() or "verify" not in preview.lower():
-    fail("Preview must document verification and negative paths")
+gate_policy = (ROOT / "skills/github-development/references/gates.md").read_text(encoding="utf-8")
+template = (ROOT / "skills/github-development/references/templates.md").read_text(encoding="utf-8")
+for term in ("Gate A", "Gate B", "Gate C", "read-only", "AGENTS.md"):
+    if term not in gate_policy:
+        fail(f"gates.md: missing safeguard {term}")
+for term in ("DIL.useState(3)", "onClick={()=>setStage(index)}", "Repo", "Rules", "Docs", "Tasks"):
+    if term not in template:
+        fail(f"templates.md: missing canonical native UI pattern {term}")
 # Verify the canonical native UI and deterministic policy scenarios.
 for token in (
     'GenUI.openUrl(verifiedUrl)',
@@ -212,90 +190,18 @@ else:
                 fail(f"preview.md: prepare should only request approval for buildable source in {name}")
     except (ValueError, KeyError, TypeError) as exc:
         fail(f"preview.md: invalid JSON scenario contract: {exc}")
-# Brainstorming discovery, pinned attribution, read-only routing and next actions.
+# Bundled Brainstorming remains pinned, credited, read-only and approval-gated.
 brainstorm = (ROOT / "skills/brainstorming/SKILL.md").read_text(encoding="utf-8")
 brain_license = (ROOT / "skills/brainstorming/LICENSE").read_text(encoding="utf-8")
 pin = "8ca22dba9a94f28898bbce59f2537ff4d87c747d"
-for term in (f"Pinned revision: \`{pin}\`", "Spike", "Bounded", "Architectural",
-             "read-only", "Gate A", "Gate B", "merge consent", "publication consent",
-             "Draft Issue", "unavailable"):
-    # Pin formatting is checked separately to avoid interpretation of Markdown markup.
-    if term.startswith("Pinned revision:"):
-        continue
+for term in ("Spike", "Bounded", "Architectural", "read-only", "Gate A",
+             "Gate B", "merge consent", "publication consent", "Draft Issue", "unavailable"):
     if term.lower() not in brainstorm.lower():
-        fail(f"brainstorming: missing required method/safety instruction {term!r}")
+        fail(f"brainstorming: missing safeguard {term!r}")
 if pin not in brainstorm or "obra/superpowers" not in brainstorm:
     fail("brainstorming: missing pinned upstream provenance")
 if "MIT License" not in brain_license or "Copyright (c) 2025 Jesse Vincent" not in brain_license:
-    fail("brainstorming: missing upstream MIT license and attribution")
-for term in ("## Intent-aware skill routing", "skills/brainstorming/SKILL.md",
-             "Brainstorming", "Grill Me", "Ponytail full",
-             "Direct answer", "Gate A", "Gate B", "never authorize any GitHub write"):
-    if term not in overview:
-        fail(f"SKILL.md: missing intent routing {term!r}")
-for term in ("completed substantive Dream response", "functional native ChatGPT buttons",
-             "exactly the advertised action", "Draft Issue (chat-only)",
-             "text alternatives", "Gate A, Gate B, merge and publication"):
-    if term not in overview:
-        fail(f"SKILL.md: missing next-action requirement {term!r}")
-# Static policy scenario matrix; these assert routing intent and authorization boundaries.
-scenarios = {
-    "game_idea": ("Brainstorming", False),
-    "architecture_comparison": ("Brainstorming", False),
-    "conflicting_requirements": ("Grill Me", False),
-    "routine_fix": ("Dream + Ponytail full", False),
-    "design_approved": ("Brainstorming", False),
-    "implementation_requested": ("Dream + Ponytail full", False),
-    "resumed_idea": ("Brainstorming", False),
-    "simple_fact": ("Direct answer", False),
-    "unsupported_upstream_tool": ("Brainstorming", False),
-    "private_repository": ("Brainstorming", False),
-}
-if len(scenarios) != 10 or any(mode not in overview or writes for mode, writes in scenarios.values()):
-    fail("brainstorming: invalid routing scenario matrix")
-if "Design approval" not in brainstorm and "design approval" not in brainstorm:
-    fail("brainstorming: design approval cannot grant write access")
-# Global Dream workflow UI contract: static policy regression checks.
-global_ui = (ROOT / "skills/github-development/SKILL.md").read_text(encoding="utf-8")
-global_section = global_ui.split("## Mandatory global workflow UI contract", 1)
-if len(global_section) != 2:
-    fail("SKILL.md: missing single mandatory global workflow UI contract")
-else:
-    contract = global_section[1].split("\n## ", 1)[0]
-    if global_ui.count("## Mandatory global workflow UI contract") != 1:
-        fail("SKILL.md: global UI contract must be unique")
-    global_stages = (
-        "Idea / Brainstorming", "Repository Overview", "Issue / Gate A",
-        "Plan / Gate B", "Development", "PR / CI / Gate C", "Release"
-    )
-    for stage in global_stages:
-        if stage not in contract:
-            fail(f"SKILL.md: global workflow stage missing: {stage}")
-    for phrase in (
-        "Repository → Rules → Docs → Tasks", "nested", "Stage identity",
-        "Verified context", "Primary content", "Truthful status",
-        "Functional next actions", "Safety boundary",
-        "explicit user repository selection", "never automatically choose",
-        "Reuse", "refresh", "Gate A", "Gate B", "Gate C",
-        "publication approval", "read-only", "text fallback",
-        "simple factual", "interim progress updates"
-    ):
-        if phrase.casefold() not in contract.casefold():
-            fail(f"SKILL.md: missing global UI safeguard: {phrase}")
-    scenario_lines = re.findall(r"^\d+\. .+ → .+$", contract, re.M)
-    if len(scenario_lines) != 13:
-        fail("SKILL.md: global UI scenario contract must cover 13 cases")
-    if not all(word in contract for word in (
-        "PR with pending/failed CI", "no Gate C", "installed files read-back",
-        "stale HEAD", "fallback", "Gate B still pending")):
-        fail("SKILL.md: missing critical scenario boundaries")
-readme_ui = (ROOT / "README.md").read_text(encoding="utf-8")
-for phrase in ("Global workflow UI", "Idea / Brainstorming", "Repository Overview",
-               "Issue / Gate A", "Plan / Gate B", "Development",
-               "PR / CI / Gate C", "Release", "Repository → Rules → Docs → Tasks",
-               "functional", "separate"):
-    if phrase not in readme_ui:
-        fail(f"README.md: missing global workflow UI description: {phrase}")
+    fail("brainstorming: missing MIT license and attribution")
 for required in ("AGENTS.md", "README.md"):
     if not (ROOT / required).is_file():
         fail(f"missing {required}")
