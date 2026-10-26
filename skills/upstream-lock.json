@@ -1,0 +1,14 @@
+{
+  "ponytail": {
+    "source": "https://github.com/DietrichGebert/ponytail",
+    "commit": "09c434ab73ca43761c5d8b0c5d341926c2fba710",
+    "path": "skills/ponytail/SKILL.md",
+    "license": "MIT"
+  },
+  "grill-me": {
+    "source": "https://github.com/satya-janghu/agent-skills",
+    "commit": "24b06ad34ef7b8ac46f666794e64a975bdd7fb9d",
+    "path": "skills/grill-me/SKILL.md",
+    "license": "MIT"
+  }
+}
